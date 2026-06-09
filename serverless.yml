@@ -1,0 +1,83 @@
+service: portfolio-risk-api-v2
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+
+  httpApi:
+    cors: true
+
+  environment:
+    PRICES_ALPHA_VANTAGE_API_KEY: ${env:PRICES_ALPHA_VANTAGE_API_KEY}
+    COMPANY_ALPHA_VANTAGE_API_KEY: ${env:COMPANY_ALPHA_VANTAGE_API_KEY}
+    PRICE_TABLE_NAME: ${self:service}-${sls:stage}-price_snapshots
+    COMPANY_OVERVIEWS_TABLE: ${self:service}-${sls:stage}-company_overviews
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:Query
+            - dynamodb:BatchWriteItem
+          Resource:
+            - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-${sls:stage}-price_snapshots
+            - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-${sls:stage}-company_overviews
+
+custom:
+  pythonRequirements:
+    pythonBin: python3.11
+
+plugins:
+  - serverless-python-requirements
+  - serverless-dotenv-plugin
+
+functions:
+  getPrices:
+    handler: src/handlers/get_prices.handler
+    events:
+      - httpApi:
+          path: /prices
+          method: get
+
+  getCompanyOverview:
+    handler: src/handlers/get_company_overview.handler
+    events:
+      - httpApi:
+          path: /company/overview
+          method: get
+
+resources:
+  Resources:
+    PriceSnapshotsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${sls:stage}-price_snapshots
+        AttributeDefinitions:
+          - AttributeName: ticker
+            AttributeType: S
+          - AttributeName: date
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ticker
+            KeyType: HASH
+          - AttributeName: date
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+    CompanyOverviewsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${sls:stage}-company_overviews
+        AttributeDefinitions:
+          - AttributeName: ticker
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ticker
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
