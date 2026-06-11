@@ -5,7 +5,7 @@ from src.services.market_data_client import fetch_daily_prices
 
 
 def test_fetch_daily_prices_parses_alpha_vantage_response(monkeypatch):
-    monkeypatch.setenv("ALPHA_VANTAGE_API_KEY", "fake-key")
+    monkeypatch.setenv("PRICES_ALPHA_VANTAGE_API_KEY", "fake-key")
 
     fake_response = {
         "Time Series (Daily)": {

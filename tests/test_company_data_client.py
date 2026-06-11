@@ -3,7 +3,7 @@ from unittest.mock import patch, Mock
 from src.services.company_data_client import fetch_company_info
 
 def test_fetch_company_info_parses_alpha_vantage_response(monkeypatch):
-    monkeypatch.setenv("ALPHA_VANTAGE_API_KEY", "fake-key")
+    monkeypatch.setenv("COMPANY_ALPHA_VANTAGE_API_KEY", "fake-key")
 
     fake_response = {
         "Symbol": "AAPL",

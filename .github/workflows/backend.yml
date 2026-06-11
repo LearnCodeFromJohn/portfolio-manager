@@ -38,7 +38,9 @@ jobs:
       AWS_DEFAULT_REGION: us-east-1
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+      PRICES_ALPHA_VANTAGE_API_KEY: ${{ secrets.PRICES_ALPHA_VANTAGE_API_KEY }}
+      COMPANY_ALPHA_VANTAGE_API_KEY: ${{ secrets.COMPANY_ALPHA_VANTAGE_API_KEY }
+
 
     steps:
       - uses: actions/checkout@v4
@@ -61,4 +63,4 @@ jobs:
         run: npm install -g serverless@3.40.0
 
       - name: Deploy Serverless backend
-        run: serverless deploy --stage dev
+        run: serverless deploy --stage prod
