@@ -35,6 +35,7 @@ def fetch_daily_prices(symbol: str) -> list[dict]:
 
     prices = []
     for date, values in time_series.items():
+        print('values', values)
         close_price = Decimal(values["4. close"])
         prices.append({
             "ticker": symbol.upper(),
@@ -43,6 +44,7 @@ def fetch_daily_prices(symbol: str) -> list[dict]:
             "open": Decimal(values["1. open"]),
             "high": Decimal(values["2. high"]),
             "low": Decimal(values["3. low"]),
+            # "close": Decimal(values["4, close"]),
             "volume": int(values["5. volume"]),
         })
     return prices

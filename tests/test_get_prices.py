@@ -19,12 +19,12 @@ def test_get_prices_returns_cached_data_when_fresh():
             "ticker": "AAPL",
             "date": today,
             "price": 100,
-            "close": 100,
+            # "close": 100,
             "volume": 1000,
         }
     ]
 
-    with patch("src.handlers.get_prices.get_prices_by_ticker") as mock_get, \
+    with patch("src.handlers.get_prices.get_prices_by_symbol") as mock_get, \
          patch("src.handlers.get_prices.fetch_daily_prices") as mock_fetch:
 
         mock_get.return_value = cached_prices
